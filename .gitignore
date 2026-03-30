@@ -206,5 +206,7 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-# Ignore JSON files
+# Custom gitignore
+data/
 *.json
+.DS_Store
