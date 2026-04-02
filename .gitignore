@@ -211,4 +211,3 @@ data/
 zz_archive/
 *.json
 .DS_Store
-migrations/
