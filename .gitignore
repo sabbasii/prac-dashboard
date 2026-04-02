@@ -208,5 +208,7 @@ __marimo__/
 
 # Custom gitignore
 data/
+zz_archive/
 *.json
 .DS_Store
+migrations/
