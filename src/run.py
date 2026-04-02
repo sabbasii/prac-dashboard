@@ -4,7 +4,13 @@ import json
 import seaborn as sns
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings")
+from django.core.wsgi import get_wsgi_application
+application = get_wsgi_application()
+
+from db.models import BannedWord, Message, User
 
 login_options = st.sidebar.radio('Login/Sign Up', ['Login', 'Sign Up'])
 
@@ -25,18 +31,25 @@ else:
 st.image('data/banner.png')
 st.title(':zap: Test Dashboard')
 
-# Metrics
-st.metric('Total Users', '1,234', '5% increase')
 
-# Statistics
-with st.expander('Statistics'):
-    fig, ax = plt.subplots(1, 1, figsize=(10, 5))
-    sns.histplot(np.random.normal(size=100), ax=ax)
-    st.pyplot(fig)
+
+# Questions and Answers
+with st.expander('Q / A'):
+    query = st.text_input('Search:')
     
-# User info
-with st.expander('User Profile'):
+    # select top 10 from messages
+    for msg in Message.objects.all().order_by('-date')[:100]:
+        if not msg.text or msg.text[-1] not in '؟?':
+            continue
+        
+        if query and query not in msg.text:
+            continue
+        col1, col2 = st.columns([1, 4])
+        col1.write(f'**{msg.user.username}**')
+        col2.write(msg.text)
+        # col2.write(msg.text.replace(query, f'**{query}**'))
+        # st.write(f"{msg.user.username:100} {msg.text}")
+        
     col1, col2 = st.columns(2)
-    col1.text_input('Name:')
-    col2.text_input('Email:')
-    st.camera_input('Take a picture:')
+    col1.button('< Previous')
+    col2.button('Next >')
